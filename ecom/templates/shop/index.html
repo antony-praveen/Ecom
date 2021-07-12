@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script> -->
+    <!-- jquerry link 👉👉👉 https://code.jquery.com/ -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    
+    <!-- popper link down -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{% static 'shop/style.css' %}">
+
+
+</head>
+
+<body> 
+    <br><br>
+    <div class="container">
+        <!-- search bar -->
+        <div class="topnav">
+            <a class="active" href="{% url 'index' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="#contact">Contact</a>
+            <button id="cart_function" type="button" class="btn btn-secondary" data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-content="Bottom popover">
+                Cart(0)
+            </button>
+            <!-- <input type="text" placeholder="Search.."> -->
+        </div><br>
+        <!-- search bar configuration -->
+        
+        <div class="row">
+            <div class="col-md-12">
+                <form class="card card-sm">
+                    <div class="card-body row no-gytters align-item-center">
+                        <div class="col">
+                            <input  name="iem_name" placeholder="search for products" class="form-control">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sucess" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div><br>
+        <!-- product display -->
+        <div class="row"> 
+            {% for product in product_objects%}
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="{{ product.image }}" style="height:250px; width:250px;  margin-left: auto;
+                    margin-right: auto;">
+                    <div class="card-body">
+                        <h3 id="nm{{ product.id }}" class="card-title_">{{ product.title }}</h3>
+                        <h5 class="card-title">{{ product.category }}</h5>
+                        <!-- <p class="card-text"> {{ product.description }}</p> -->
+                        <textarea name="" id="" cols="35" rows="2">{{ product.description }}</textarea>
+                        <h5 style="color:green;" id="price{{ product.id }}">{{ product.price }}</h5>
+                        <h5>Discount <span style="color:red;" >{{ product.discount_price }}$</span></h5>
+
+                        <!-- view and add to card -->
+                        <div class="row" style=" margin: auto;">
+                            <div class="col-md-3">
+                                <a href="{{product.id}}" class="btn btn-warning" style="background-color: green;">View</a>
+                            </div>
+                            <div class="col-md-9">
+                                <button id="{{ product.id }}" class="btn atc btn-warning">Add to Cart</button>
+                            </div>
+                        </div>  
+                    </div>
+                    
+                </div>
+                <br>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if product_objects.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a  href="?page={{ product_objects.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current ">
+                        Page {{ product_objects.number }} of {{product_objects.paginator.num_pages }}.
+                    </span>
+            
+                    {% if product_objects.has_next %}
+                        <a  href="?page={{product_objects.next_page_number }}">next</a>
+                        <a  href="?page={{ product_objects.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+
+    if(localStorage.getItem('cart')==null){
+        var cart = {};
+        
+    }
+    else{
+        cart = JSON.parse(localStorage.getItem('cart'))
+    }
+
+    $(document).on('click','.atc',function(){
+        console.log('the button was clicked');
+
+        var item_id = this.id.toString();
+        console.log(item_id);
+
+        if(cart[item_id] != undefined){
+            quantity = cart[item_id][0] + 1;
+            cart[item_id][0] = quantity;
+            cart[item_id][2] = cart[item_id][2] + parseFloat(document.getElementById('price'+item_id).innerHTML);
+        }
+        else{
+            quantity = 1;
+            price = parseFloat(document.getElementById('price'+item_id).innerHTML);
+            name = document.getElementById('nm' + item_id).innerHTML;
+            cart[item_id] = [quantity,name,price];
+        }
+        console.log(cart);
+        localStorage.setItem('cart',JSON.stringify(cart))
+
+        document.getElementById('cart_function').innerHTML = "cart(" + Object.keys(cart).length + ")"; 
+        
+        
+       
+    });
+    //https://getbootstrap.com/docs/5.0/components/popovers/#example-enable-popovers-everywhere 👇👇👇👇
+    /*var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    document.getElementById('cart_function').setAttribute('data-bs-content',cartString)
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl)
+    });*/
+
+    //display cart function
+    displayCart(cart);
+    function displayCart(cart) {    //cart is perameter actually
+
+        var cartString = "";
+        cartString +=  "<h5>This is your cart</h5>";
+
+        var cartIndex = 1;
+        for (var x in cart){
+            cartString += cartIndex;
+            cartString += document.getElementById("nm" + x).innerHTML +" | " + "Qty:" + cart[x][0] + "</br>" ;
+            cartIndex +=1;
+
+        }
+        
+        //checkout
+       //cartString += "<a href='#'><button class='btn btn-warning' id='checkout'>check</button></a>";
+         cartString += "<br><a class='btn btn-warning' id='checkout' href='/checkout'>checkout</a>";     
+
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        document.getElementById("cart_function").setAttribute("data-bs-content",cartString);
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+          });
+
+        
+    }
+    
+</script>
+</html>
+
+
+
+
+

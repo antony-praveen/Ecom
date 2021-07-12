@@ -1,0 +1,26 @@
+body{
+    background-color: aqua;
+}
+
+#who_we_are{
+    text-align:left;
+}
+
+#about_heading{
+    color: orange;
+    text-align:center;
+    
+}
+
+#about_detail{
+    text-align:center;
+    color: rgb(240, 240, 240);
+}
+
+#box{
+    background-color:rgb(15, 78, 78);
+    padding-left: 15px;
+    padding-right: 15px;
+    
+   
+}

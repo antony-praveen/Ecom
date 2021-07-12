@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- using bootstrap cdn i version 4.0 link below -->
+  <!-- https://getbootstrap.com/docs/4.0/getting-started/introduction/  👇👇👇 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+  <!-- jquery link https://code.jquery.com/ -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  
+  <title>E-Shop</title>
+</head>
+<body>
+    <div class="container">
+      <div class="row">
+          <div class="col-md-12"> 
+            <h1>Product List</h1>   
+            <ul class="list-group" id="item_list">
+              <br>                    
+            </ul><br><hr>
+          </div>
+      </div>
+      <!-- form -->
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Checkout form</h1> <hr>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group col-md-2"> 
+              <input  type="hidden" class="form-control" id="items" name="items">
+            </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputEmail4">Name</label>
+                <input id="name" name="name" type="text" class="form-control" id="inputEmail4" placeholder="Enter Your Name">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="inputPassword4">Email</label>
+                <input id="email" name="email"type="email" class="form-control" id="inputPassword4" placeholder="example@email.com">
+              </div>
+            </div>
+            <div class="form-group col-md-12">
+              <label for="inputAddress">Address</label>
+              <input id="address" name="address" type="text" class="form-control" id="inputAddress" placeholder="Your Current Address">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="inputCity">City</label>
+                <input id="city" name="city" type="text" class="form-control" id="inputCity">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputState">State</label>
+                <input id="state" name="state" type="text" class="form-control" id="inputCity">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputZip">Zip</label>
+                <input id="zipcode" name="zipcode" type="text" class="form-control" id="inputZip">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="inputZip">Amount To Be Paid</label>
+                <input readonly="" type="text" class="form-control" id="total" name="total">
+              </div>
+            </div>
+            <div class="form-group col-md-12"> 
+              <button type="submit" class="btn btn-primary">Place Order</button>
+            </div>
+            
+            
+          </form>
+        </div>
+      </div>
+    </div>
+</body>
+<script type="text/javascript">
+  if(localStorage.getItem('cart') == null){
+    var cart = {}
+  }
+  else{
+    var cart = JSON.parse(localStorage.getItem('cart'))
+    
+  }
+
+  total = 0;
+  for (item in cart){
+    let name = cart[item][1];
+    let quantity = cart[item][0];
+    let price = cart[item][2];
+    total = total + cart[item][2];
+    // new feature using the symbol to allow the html `` it's below the Esc button
+    var itemString = `<li class="list-group-item d-flex justify-content-between align-items-center"><span class="badge badge-primary badge-pill">${quantity}</span>${name}<span class="badge badge-warning badge-pill">${price}</span></li>`;
+   
+    $('#item_list').append(itemString);
+  
+  }
+  totalPrice = `<li class="list-group-item d-flex justify-content-between align-items-center"><b>Your Total Amount</b><span class="badge badge-success">${total}</span></li>`;
+  
+  $('#item_list').append(totalPrice);
+  $('#total').val(total)
+  $('#items').val(JSON.stringify(cart)); 
+</script>
+</html>
