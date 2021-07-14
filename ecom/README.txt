@@ -24,4 +24,4 @@ Step 4: Enert the Project folder
 Step 5:Run the server
         1. python manage.py runserver   (click enter)
 
-        (NOTE: for changing the add any number end of the above command).
+        (NOTE: for changing the add any number end of the above command)..
